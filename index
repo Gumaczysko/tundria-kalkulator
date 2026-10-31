@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tundria 2 - Kalkulator Kryształów z Ulepszaczy</title>
+    <style>
+        :root {
+            --bg-dark: #0a0e14;
+            --bg-card: #141923;
+            --tundria-blue: #00d2ff;
+            --tundria-crystal: #4dc3ff;
+            --text-main: #c9d1d9;
+            --text-muted: #8b949e;
+            --success: #238636;
+            --danger: #da3637;
+            --border: #263244;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        header h1 {
+            color: var(--tundria-blue);
+            font-size: 2.3rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 15px rgba(0, 210, 255, 0.4);
+        }
+
+        header p {
+            color: var(--text-muted);
+            margin-top: 5px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 25px;
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        h2 {
+            color: var(--tundria-crystal);
+            font-size: 1.25rem;
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 5px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            background-color: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: #fff;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--tundria-blue);
+        }
+
+        .results-panel {
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 1.05rem;
+        }
+
+        .result-row.total {
+            border-top: 1px solid var(--border);
+            padding-top: 12px;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .badge {
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-top: 15px;
+            text-transform: uppercase;
+        }
+
+        .badge.profit {
+            background-color: rgba(35, 134, 54, 0.2);
+            color: #56d364;
+            border: 1px solid var(--success);
+        }
+
+        .badge.loss {
+            background-color: rgba(218, 54, 55, 0.2);
+            color: #f85149;
+            border: 1px solid var(--danger);
+        }
+
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Tundria 2</h1>
+        <p>Kalkulator Opłacalności: Ulepszacze → Kryształ</p>
+    </header>
+
+    <div class="container">
+        <div class="grid">
+            <!-- PANEL WEJŚCIOWY -->
+            <div>
+                <h2>⚙️ Wybór Ulepszacza i Ceny</h2>
+                
+                <div class="form-group">
+                    <label for="item-select">Wybierz ulepszacz, który chcesz przetopić:</label>
+                    <select id="item-select">
+                        <option value="30000">Rdzeń Lodu II (Kurs 1:30000)</option>
+                        <option value="25000">Esencja Błyskawicy II (Kurs 1:25000)</option>
+                        <option value="25000">Esencja Lodu II (Kurs 1:25000)</option>
+                        <option value="12000">Rdzeń Błyskawicy II (Kurs 1:12000)</option>
+                        <option value="8000" selected>Róg Duratusa (Kurs 1:8000)</option>
+                        <option value="5000">Złota Łuska Smoka (Kurs 1:5000)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="item-price">Cena rynkowa 1 szt. tego ulepszacza (w Won):</label>
+                    <input type="number" id="item-price" value="60" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label for="crystal-sell-price">Cena sprzedaży gotowego Kryształu (w Won):</label>
+                    <input type="number" id="crystal-sell-price" value="240" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label for="npc-fee">Opłata u NPC za wytworzenie (w Won):</label>
+                    <input type="number" id="npc-fee" value="10" min="0">
+                </div>
+            </div>
+
+            <!-- PANEL WYNIKÓW -->
+            <div class="results-panel">
+                <div>
+                    <h2>📊 Analiza Kosztów (Na 1 Kryształ)</h2>
+                    
+                    <div class="result-row">
+                        <span>Wymagane odłamki:</span>
+                        <span style="color: var(--text-muted);">25 000 szt.</span>
+                    </div>
+                    <div class="result-row">
+                        <span>Potrzebna ilość ulepszacza:</span>
+                        <span id="res-items-needed" style="color: #fff; font-weight: bold;">0 szt.</span>
+                    </div>
+                    <div class="result-row">
+                        <span>Koszt zakupionych ulepszaczy:</span>
+                        <span id="res-mats-cost">0 Won</span>
+                    </div>
+                    <div class="result-row">
+                        <span>Opłata u Zaklinacza:</span>
+                        <span id="res-npc-cost">0 Won</span>
+                    </div>
+                    
+                    <div class="result-row" style="border-top: 1px solid var(--border); padding-top: 10px;">
+                        <span>Łączny koszt wytworzenia:</span>
+                        <span id="res-total-cost" style="color: var(--tundria-blue); font-weight: bold;">0 Won</span>
+                    </div>
+
+                    <div class="result-row total" style="margin-top: 15px;">
+                        <span>Cena sprzedaży Kryształu:</span>
+                        <span id="res-revenue">0 Won</span>
+                    </div>
+                    <div class="result-row total" style="border-top: none; padding-top: 0;">
+                        <span>Czysty zysk / strata:</span>
+                        <span id="res-final-profit">0 Won</span>
+                    </div>
+                </div>
+
+                <div id="status-badge" class="badge profit">
+                    Analiza...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SKRYPT BEZPIECZNIE NA SAMYM DOLE STRONY -->
+    <script>
+        var itemSelect = document.getElementById('item-select');
+        var itemPriceInput = document.getElementById('item-price');
+        var crystalSellPriceInput = document.getElementById('crystal-sell-price');
+        var npcFeeInput = document.getElementById('npc-fee');
+
+        var resItemsNeeded = document.getElementById('res-items-needed');
+        var resMatsCost = document.getElementById('res-mats-cost');
+        var resNpcCost = document.getElementById('res-npc-cost');
+        var resTotalCost = document.getElementById('res-total-cost');
+        var resRevenue = document.getElementById('res-revenue');
+        var resFinalProfit = document.getElementById('res-final-profit');
+        var badge = document.getElementById('status-badge');
+
+        function TundriaCalculator() {
+            var course = parseFloat(itemSelect.value);
+            var itemPrice = parseFloat(itemPriceInput.value) || 0;
+            var crystalSellPrice = parseFloat(crystalSellPriceInput.value) || 0;
+            var npcFee = parseFloat(npcFeeInput.value) || 0;
+            
+            var targetShards = 25000;
+            var itemsNeeded = targetShards / course;
+            var totalMatsCost = itemsNeeded * itemPrice;
+            var totalCraftingCost = totalMatsCost + npcFee;
+            var finalProfit = crystalSellPrice - totalCraftingCost;
+
+            resItemsNeeded.innerText = itemsNeeded.toFixed(3) + ' szt.';
+            resMatsCost.innerText = totalMatsCost.toFixed(2) + ' Won';
+            resNpcCost.innerText = npcFee.toFixed(2) + ' Won';
+            resTotalCost.innerText = totalCraftingCost.toFixed(2) + ' Won';
+            resRevenue.innerText = crystalSellPrice.toFixed(2) + ' Won';
